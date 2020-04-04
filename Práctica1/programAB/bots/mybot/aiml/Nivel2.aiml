@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+
+<!--Fechas concretas -->
+
+<category>
+    <pattern>[habria quisiera teneis hay] (pedir) [hueco cita consulta] ^ el (proximo) (dia) <set>dias</set> de <set>month_es</set> a las <set>horas_totales</set></pattern>
+    <template>
+        <think>
+            <set name="dia"><star index= "2"/>-<map name="meses_es"><star index="3"/></map>-20</set>
+            <set var="hora_propuesta"> <star index="4"/> </set>
+            <set var="bool"> <srai> IS BUSY DAY <get name="dia"/> AT <get var="hora_propuesta"/> </srai> </set> 
+        </think>
+
+        Un momentito que revise las citas de hoy...
+        <condition var= "bool">
+            <li value="TRUE"> 
+                Lo siento, a esa hora ya tenemos a otro cliente, digame otra hora si quiere
+            </li>
+
+            <li value="FALSE">
+                Perfecto, un momentito que le apunte...
+                <srai> MARK OCUPADO AT <get var="hora_propuesta"/> ON <get name="dia"/> </srai>
+                vale, apuntado queda. Necesita algo mas?
+            </li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>[habria quisiera teneis hay] (pedir) [hueco cita consulta] ^ el (proximo) (dia) <set>dias</set> de <set>month_es</set> por la mañana (temprano)</pattern>
+    <template>
+        <think>
+            <set name="dia"><star index= "2"/>-<map name="meses_es"><star index="3"/></map>-20</set>
+            <set var="sublista">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">9</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, ese dia podría ser por la mañana la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?
+            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día? 
+                <think> <set name="topic"> desea algo mas </set> </think>
+            </li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>[habria quisiera teneis hay] (pedir) [hueco cita consulta] ^ el (proximo) (dia) <set>dias</set> de <set>month_es</set> por la tarde</pattern>
+    <template>
+        <think>
+            <set name="dia"><star index= "2"/>-<map name="meses_es"><star index="3"/></map>-20</set>
+            <set var="sublista">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">14</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, ese dia podría ser por la tarde la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?
+            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día? 
+                <think> <set name="topic"> desea algo mas </set> </think>
+            </li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>[habria quisiera teneis hay] (pedir) [hueco cita consulta] ^ el (proximo) (dia)* de * a las * </pattern>
+
+    <template> Mmm, creo que la fecha y la hora que me dices son incorrectas, por favor me las puede repetir?</template>
+</category>
+
+<category>
+    <pattern>[habria quisiera teneis hay] (pedir) [hueco cita consulta] ^ el (proximo) (dia) * de * por la mañana (temprano)</pattern>
+    <template> Mmm, creo que la fecha y la hora que me dices son incorrectas, por favor me las puede repetir?</template>
+</category>
+
+<category>
+    <pattern>[habria quisiera teneis hay] (pedir) [hueco cita consulta] ^ el (proximo) (dia) * de * por la tarde</pattern>
+    <template> Mmm, creo que la fecha y la hora que me dices son incorrectas, por favor digame otra fecha</template>
+</category>
+
+<!--HOY -->
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) hoy a las <set>horas_totales</set> </pattern>
+    <template>
+        <think>
+            <set var="date"> <srai>DATE</srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="hora_propuesta"> <star index="2"/> </set>
+            <set var="bool"> <srai> IS BUSY DAY <get name="dia"/> AT <get var="hora_propuesta"/> </srai> </set> 
+        </think> 
+
+        Un momentito que revise las citas de hoy...
+        <condition var= "bool">
+            <li value="TRUE"> 
+                Lo siento, a esa hora ya tenemos a otro cliente, digame otra hora si quiere
+            </li>
+
+            <li value="FALSE">
+                Perfecto, un momentito que le apunte...
+                <srai> MARK OCUPADO AT <get var="hora_propuesta"/> ON <get name="dia"/> </srai>
+                vale, apuntado queda. Necesita algo mas?
+                <think> <set name="topic"> desea algo mas </set> </think>
+            </li>
+        </condition>
+        
+    </template>
+</category>
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) hoy por la mañana (temprano) </pattern>
+    <template>
+        <think>
+            <set var="date"> <srai>DATE</srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="sublista">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">9</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, hoy podría ser por la mañana la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?
+            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día?
+                <think> <set name="topic"> desea algo mas </set> </think>
+            </li>
+        </condition>
+
+
+    </template>
+
+</category>
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) hoy por la tarde </pattern>
+
+    <template>
+        <think>
+            <set var="date"> <srai>DATE</srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="sublista">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">14</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, hoy podría ser por la mañana la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?
+            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día?
+                <think> <set name="topic"> desea algo mas </set> </think> 
+            </li>
+        </condition>
+    </template>
+
+</category>
+
+
+<category>
+    <pattern>[Hay Teneis Quisiera] ^ (cita) (hora) (consulta) hoy a las * </pattern>
+
+    <template> Mmm, creo que la hora que me dices es incorrecta porque estamos cerrados, por favor digame otra fecha</template>
+</category>
+
+<!-- MAÑANA -->
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) (para) mañana a las <set>horas_totales</set> </pattern>
+    <template>
+
+        <think>
+            <set var="date"> <srai>TOMORROWDATE <srai> DATE </srai> </srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="hora_propuesta"> <star index="2"/> </set>
+            <set var="bool"> <srai> IS BUSY DAY <get name="dia"/> AT <get var="hora_propuesta"/> </srai> </set> 
+        </think> 
+
+        Un momentito que revise las citas de mañana...
+        <condition var= "bool">
+            <li value="TRUE"> 
+                Lo siento, a esa hora ya tenemos a otro cliente, digame otra hora si quiere
+            </li>
+
+            <li value="FALSE">
+                Perfecto, un momentito que le apunte...
+                <srai> MARK OCUPADO AT <get var="hora_propuesta"/> ON <get name="dia"/> </srai>
+                vale, apuntado queda. Necesita algo mas?
+                <think> <set name="topic"> desea algo mas </set> </think>
+            </li>
+        </condition>
+        
+    </template>
+</category>
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) (para) mañana por la mañana (temprano) </pattern>
+    <template>
+        <think>
+            <set var="date"> <srai>TOMORROWDATE <srai> DATE </srai> </srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="sublista">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">9</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, mañana podría ser por la mañana la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?
+            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día?
+                <think> <set name="topic"> desea algo mas </set> </think>
+            </li>
+        </condition>
+
+
+    </template>
+
+</category>
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) (para) mañana por la tarde </pattern>
+
+    <template>
+        <think>
+            <set var="date"> <srai>TOMORROWDATE <srai> DATE </srai> </srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="sublista">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">14</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, mañana podría ser por la tarde la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?
+            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día?
+                <think> <set name="topic"> desea algo mas </set> </think> 
+            </li>
+        </condition>
+    </template>
+
+</category>
+
+<category>
+    <pattern>[habria quisiera teneis hay] (pedir) [hueco cita consulta] (para) (pasado) mañana a las * </pattern>
+
+    <template> Mmm, creo que la hora que me dices es incorrecta porque estamos cerrados, por favor digame otra fecha</template>
+</category>
+
+<!-- PASADO MAÑANA -->
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) (para) pasado mañana a las <set>horas_totales</set> </pattern>
+    <template>
+
+        <think>
+            <set var="date"> <srai> TOMORROWDATE <srai>TOMORROWDATE <srai> DATE </srai> </srai> </srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="hora_propuesta"> <star index="2"/> </set>
+            <set var="bool"> <srai> IS BUSY DAY <get name="dia"/> AT <get var="hora_propuesta"/> </srai> </set> 
+        </think> 
+
+        Un momentito que revise las citas de pasado mañana...
+        <condition var= "bool">
+            <li value="TRUE"> 
+                Lo siento, a esa hora ya tenemos a otro cliente, digame otra hora si quiere
+            </li>
+
+            <li value="FALSE">
+                Perfecto, un momentito que le apunte...
+                <srai> MARK OCUPADO AT <get var="hora_propuesta"/> ON <get name="dia"/> </srai>
+                vale, apuntado queda. Necesita algo mas?
+                <think> <set name="topic"> desea algo mas </set> </think>
+            </li>
+        </condition>
+        
+    </template>
+</category>
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) pasado mañana por la mañana (temprano) </pattern>
+    <template>
+        <think>
+            <set var="date"> <srai> TOMORROWDATE <srai>TOMORROWDATE <srai> DATE </srai> </srai> </srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="hora_propuesta"> <star index="2"/> </set>
+            <set var="sublista">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">9</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, pasado mañana podría ser por la mañana la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?
+            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día? 
+                <think> <set name="topic"> desea algo mas </set> </think>
+            </li>
+        </condition>
+
+
+    </template>
+
+</category>
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) pasado mañana por la tarde </pattern>
+
+    <template>
+        <think>
+            <set var="date"> <srai> TOMORROWDATE <srai>TOMORROWDATE <srai> DATE </srai> </srai> </srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="hora_propuesta"> <star index="2"/> </set>
+            <set var="sublista">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">14</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, pasado mañana podría ser por la tarde la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día?
+                <think> <set name="topic"> desea algo mas </set> </think>
+
+            </li>
+        </condition>
+    </template>
+
+</category>
+
+<!-- Proximo dia -->
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) para el [proximo siguiente] <set>weekday_es</set> a las <set>horas_totales</set> </pattern>
+    <template>
+        <think>
+            <set var="num_dias"> <srai> DAYS UNTIL <star index="2"/> </srai> </set> 
+            <condition var="num_dias">
+                <li value="0"> <set var="num_dias">7</set> </li>
+                <li></li>
+            </condition>
+
+            <set var="date"> <srai> DATE IN  <get var="num_dias"/> DAYS </srai> </set>
+            <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="hora_propuesta"> <star index="3"/> </set>
+            <set var="bool"> <srai> IS BUSY DAY <get name="dia"/> AT <get var="hora_propuesta"/> </srai> </set> 
+        </think> 
+
+        Un momentito que revise las citas del proximo <star index="2"/> ...
+        <condition var= "bool">
+            <li value="TRUE"> 
+                Lo siento, a esa hora ya tenemos a otro cliente, digame otra hora si quiere
+            </li>
+
+            <li value="FALSE">
+                Perfecto, un momentito que le apunte...
+                <srai> MARK OCUPADO AT <get var="hora_propuesta"/> ON <get name="dia"/> </srai>
+                vale, apuntado queda. Necesita algo mas?
+                <think> <set name="topic"> desea algo mas </set> </think>
+            </li>
+        </condition>
+     
+    </template>
+</category>
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) para el proximo <set>weekday_es</set> por la mañana (temprano) </pattern>
+    <template>
+        <think>
+            <set var="num_dias"> <srai> DAYS UNTIL <star index="2"/> </srai> </set> 
+            <set var="date"> <srai> DATE IN  <get var="num_dias"/> DAYS </srai> </set>
+            <set var="dia"> <map name="conversor"><srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="sublista">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">9</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, el proximo <star index="2"/> podría ser por la mañana la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?
+            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día?
+                <think> <set name="topic"> desea algo mas </set> </think> 
+            </li>
+        </condition>
+
+
+    </template>
+
+</category>
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) para el proximo <set>weekday_es</set> por la tarde </pattern>
+
+    <template>
+        <think>
+            <set var="num_dias"> <srai> DAYS UNTIL <star index="2"/> </srai> </set> 
+            <set var="date"> <srai> DATE IN  <get var="num_dias"/> DAYS </srai> </set>    <set var="dia"> <map name="conversor"><srai> TOP <get var="date"/> </srai> </map></set>
+            <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+            <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+            <set name="dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+            <set var="hora_propuesta"> <star index="2"/> </set>
+            <set var="sublista">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set name="sublista_global">
+                <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get name="dia"/> </srai> </srai>
+            </set>
+            <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+            <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+        </think>
+
+        <condition var="comparador">
+            <li><value>null</value> 
+                <think>
+                    <set var="item">
+                    <srai> ITERATE <get name="sublista_global"/> </srai>
+                    </set>
+                    <set var="Hora">14</set>
+                    <set name="Horas_libres"></set>
+                </think>
+                    <condition var="item">
+                        <li value="end"></li>
+                        <li value="null">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set name="Horas_libres"> <get name="Horas_libres"/> <map name="num_horas"><get var="Hora"/> </map>:00</set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map></set>
+                            </think>
+                            <loop/>
+                        </li>
+                        <li value="OCUPADO">
+                            <think>
+                                <set var="item">
+                                    <srai>NEXT</srai>
+                                </set>
+                                <set var="Hora"> <map name="successor"> <get var="Hora"/> </map> </set>
+                            </think>
+                            <loop/>
+                        </li>
+                    </condition>
+                    Un momentito que repase el calendario...
+                    Si, el proximo <star index="2"/> podría ser por la tarde la cita, las horas libres que tengo son:
+                    <get name="Horas_libres"/>
+                    Le interesa alguna hora en concreto?
+            
+            </li>
+            <li><value>ocupado</value>
+                <think>
+                    <set var="comparador"> <srai>TOP <get var="sublista"/> </srai> </set>
+                    <set var="sublista"> <srai> REMAIN <get var="sublista"/> </srai> </set>
+                </think>
+                <loop/>
+            </li>
+            <li> 
+                Un momentito que repase el calendario...
+                No hay horas libres ese día, lo siento. ¿Desea otro día?
+                <think> <set name="topic"> desea algo mas </set> </think> 
+            </li>
+        </condition>
+    </template>
+
+</category>
+
+<category>
+    <pattern> [Hay Teneis Quisiera] ^ (cita) (hora) (consulta) para el [proximo siguiente] * a las * </pattern>
+    <template> ehh... creo que ha debido usted de equivocarse con la fecha o la hora, por favor repítamela</template>
+
+</category>
+
+
+</aiml>

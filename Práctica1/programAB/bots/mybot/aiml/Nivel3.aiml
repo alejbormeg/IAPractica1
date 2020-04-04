@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<category>
+    <pattern> Hola, (buenos) (buenas) (dias) (tardes) </pattern>
+    <template> Hola, Clínica Dentín, ¿que desea? </template>
+</category>
+
+<category>
+    <pattern> [llamaba Queria Quisiera] (para) (concretar) (pedir) (solicitar) (una) cita </pattern>
+    <template> Muy bien, dígame cuando quiere tener la cita </template>
+</category>
+
+<category>
+    <pattern> ^ no ^ </pattern>
+    <template> 
+        Muy bien pues dígame otro día 
+        <think> <set name="topic"> No lo tiene claro </set> </think>
+    </template>
+</category>
+
+<category>
+    <pattern> ^ [como cuando] (lo) (teneis) (podeis) </pattern>
+    <template> ¿Quiere cita para esta semana?
+            <think>
+                <!-- Primer dia de la semana -->
+                <set name="date_ini"> <srai>DATE</srai> </set>
+                <set var="date"> <get name="date_ini"/> </set>
+                <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+                <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+                <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set name="primer_dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+                <set name="caso">0</set> <!-- Hare una distincion de casos en posteriores reglas-->
+                <!-- Ultimo dia de la semana -->
+                <set var="num_dias"> <srai> DAYS UNTIL Viernes </srai> </set> 
+                <set name="date_fin"> <srai> DATE IN  <get var="num_dias"/> DAYS </srai> </set>
+                <set var="date"> <get name="date_fin"/> </set>
+                <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+                <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+                <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set name="ultimo_dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+                <set name="topic"> No lo tiene claro </set> 
+
+                <!-- variable para acumular el numero de dias-->
+                <set name="numero_dias_viernes"> <get var="num_dias"/> </set>
+                <set name="num_dias_lunes"> <srai> DAYS UNTIL LUNES  </srai> </set>
+
+
+            </think>
+    </template>
+</category>
+
+<category>
+    <pattern> ^ [como cuando] (lo) (teneis) (podeis) por la mañana </pattern>
+    <template> ¿Quiere cita para esta semana?
+            <think>
+                <!-- Primer dia de la semana -->
+                <set name="date_ini"> <srai>DATE</srai> </set>
+                <set var="date"> <get name="date_ini"/> </set>
+                <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+                <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+                <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set name="primer_dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+                <set name="caso">0</set> <!-- Hare una distincion de casos en posteriores reglas-->
+                <!-- Ultimo dia de la semana -->
+                <set var="num_dias"> <srai> DAYS UNTIL Viernes </srai> </set> 
+                <set name="date_fin"> <srai> DATE IN  <get var="num_dias"/> DAYS </srai> </set>
+                <set var="date"> <get name="date_fin"/> </set>
+                <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+                <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+                <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set name="ultimo_dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+                <set name="topic"> No lo tiene claro </set> 
+
+                <!-- variable para acumular el numero de dias-->
+                <set name="numero_dias_viernes"> <get var="num_dias"/> </set>
+                <set name="num_dias_lunes"> <srai> DAYS UNTIL LUNES  </srai> </set>
+
+                <!-- variable para indicar si queremos cita por la mañana, tarde o da igual-->
+                <set name="parte_dia"> mañana </set>
+
+
+            </think>
+    </template>
+</category>
+
+<category>
+    <pattern> ^ [como cuando] (lo) (teneis) (podeis) por la tarde </pattern>
+    <template> ¿Quiere cita para esta semana?
+            <think>
+                <!-- Primer dia de la semana -->
+                <set name="date_ini"> <srai>DATE</srai> </set>
+                <set var="date"> <get name="date_ini"/> </set>
+                <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+                <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+                <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set name="primer_dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+                <set name="caso">0</set> <!-- Hare una distincion de casos en posteriores reglas-->
+                <!-- Ultimo dia de la semana -->
+                <set var="num_dias"> <srai> DAYS UNTIL Viernes </srai> </set> 
+                <set name="date_fin"> <srai> DATE IN  <get var="num_dias"/> DAYS </srai> </set>
+                <set var="date"> <get name="date_fin"/> </set>
+                <set var="dia"> <srai> TOP <get var="date"/> </srai> </set>
+                <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+                <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set name="ultimo_dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+                <set name="topic"> No lo tiene claro </set> 
+
+                <!-- variable para acumular el numero de dias-->
+                <set name="numero_dias_viernes"> <get var="num_dias"/> </set>
+                <set name="num_dias_lunes"> <srai> DAYS UNTIL LUNES  </srai> </set>
+
+                <!-- variable para indicar si queremos cita por la mañana, tarde o da igual-->
+                <set name="parte_dia"> tarde </set>
+
+
+            </think>
+    </template>
+</category>
+ 
+<topic name="No lo tiene claro">
+    <category>
+        <pattern> si ^ </pattern>
+        <template>
+        <think>
+            <condition name="caso">
+                    <!-- Caso 0, puede ser que no tenga que pasar 7 días exactos hasta el siguiente lunes porque la semana empezó en otro día (martes, miércoles...)-->
+                    <li value="0">
+                        <set var="fecha"> <get name="date_ini"/> </set>
+                        <set var="dia_actual"> <get name="primer_dia"/></set>
+                        <set var="num"> <srai> DAYS UNTIL VIERNES </srai> </set>
+                        <set var="lista_dias_candidatos"> <get var="dia_actual"/> </set>
+                        <set name="lista_dias_libres"> </set>
+                    </li>
+                    
+                    <!-- Caso 1, la semana anterior empezó en lunes y deben pasar 7 días hasta el próximo lunes-->
+
+                    <li value="1">
+                        <set var="fecha"> <get name="date_ini"/> </set>
+                        <set var="dia_actual"> <get name="primer_dia"/></set>
+                        <set var="num"> 4 </set>
+                        <set var="lista_dias_candidatos"> <get var="dia_actual"/> </set>
+                        <set name="lista_dias_libres"> </set>
+                    </li>
+                </condition>
+                
+                <condition var="num"> 
+                
+                    <li value="0">
+                    </li>
+
+                    <li>
+                       
+                        <set var="fecha"> <srai>TOMORROWDATE <get var="fecha"/> </srai> </set>
+                        <set var="dia"> <map name="conversor"><srai> TOP <get var="fecha"/> </srai> </map></set>
+                        <set var="fecha"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                        <set var="mes"> <map name="meses_es"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                        <set var="anio"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                        <set var="dia_actual"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+                        <set var="lista_dias_candidatos"> <get var="lista_dias_candidatos"/> <get var="dia_actual"/> </set>
+                        <set var="num"> <srai>MINUS <get var="num"/> 1 </srai> </set>
+                        <set var="fecha"> <get var="dia"/> <get var="fecha"/> </set>
+                    <loop/>
+                    </li>  
+                </condition>  
+
+                <set var="item">
+                <srai> ITERATE <get var="lista_dias_candidatos"/> </srai>
+                </set>
+
+                <condition var="item">
+                    <li value="$"></li>
+                    <li>    
+                            <condition name="parte_dia">
+                                <li value="mañana">
+                                    <set var="sublista_horas_libres">
+                                        <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get var="item"/> </srai> </srai>
+                                    </set>                                        
+                                </li>
+
+                                <li value="tarde">
+                                    <set var="sublista_horas_libres">
+                                        <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get var="item"/> </srai> </srai>
+                                    </set>
+                                </li>
+
+                                <li>
+                                    <set var="sublista_horas_libres">
+                                        <srai> SUBLIST FROM 9 TO 21 OF <srai> LIST OF DAY <get var="item"/> </srai> </srai>
+                                    </set>
+                                </li>
+                            </condition>         
+                            <set var="cuenta"> <srai> FINDITEM null IN <get var="sublista_horas_libres"/> </srai> </set>         
+                            <condition var="cuenta">
+                                <li value="0">
+                                </li>
+                                <li>
+                                    <set name="lista_dias_libres"> <get name="lista_dias_libres"/> <get var="item"/> </set>
+                                </li>
+                            </condition>
+                            <set var="item">
+                                <srai>NEXT</srai>
+                            </set>
+                        <loop/>
+                    </li>
+                </condition>
+                <set var="vacia"><srai> COUNT <get name="lista_dias_libres"/> </srai></set>
+            </think>   
+            <condition var="vacia">
+                <li value="0">
+                    Vale, me temo que esa semana no quedan días libres, la siguiente podria?
+                </li>
+
+                <li>
+                    Muy bien, los días que tengo libres esta semana son: <get name="lista_dias_libres"/>
+                    Así que cualquier día de esos podría ser, que día prefiere?
+                </li>
+            </condition>
+            
+        </template>
+    </category>
+
+    <category>
+        <pattern> no ^ </pattern>
+        <template>
+            
+            <think>
+            <!-- Primer dia de la semana -->
+                <condition name="caso">
+                    <!-- Caso 0, puede ser que no tenga que pasar 7 días exactos hasta el siguiente lunes porque la semana empezó en otro día (martes, miércoles...)-->
+                    <li value="0">
+                        <set name="date_ini"> <srai>DATE IN <get name="num_dias_lunes"/> DAYS</srai> </set>
+                        <set var="date"> <get name="date_ini"/> </set>
+                        <set var="dia"> <map name="conversor"><srai> TOP <get var="date"/> </srai> </map> </set>
+                        <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+                        <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+                        <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+                        <set name="primer_dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set>
+                        <set name="caso"> 1 </set> <!--cambiamos a caso 1-->
+                        <set name="num_dias_lunes"> <srai> SUMA <get name="num_dias_lunes"/> 7 </srai> </set>
+                    </li>
+                    
+                    <!-- Caso 1, la semana anterior empezó en lunes y deben pasar 7 días hasta el próximo lunes-->
+
+                    <li value="1">
+                        <set name="date_ini"> <srai>DATE IN <get name="num_dias_lunes"/> DAYS</srai> </set>
+                        <set var="date"> <get name="date_ini"/> </set>
+                        <set var="dia"> <map name="conversor"><srai> TOP <get var="date"/> </srai> </map> </set>
+                        <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+                        <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+                        <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+                        <set name="primer_dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+                        <set name="num_dias_lunes"> <srai> SUMA <get name="num_dias_lunes"/> 7 </srai> </set>
+                     
+                    </li>
+                </condition>                 
+
+            <!-- Ultimo dia de la semana -->
+                <set name="date_fin"> <srai> DATE IN <get name="numero_dias_viernes"/> DAYS </srai> </set>
+                <set var="date"> <get name="date_fin"/> </set>
+                <set var="dia"> <map name="conversor"><srai> TOP <get var="date"/> </srai> </map> </set>
+                <set var="date"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set var="mes"> <map name="meses_es"> <srai> TOP <get var="date"/> </srai> </map> </set>
+                <set var="anio"> <srai> REMAIN <get var="date"/> </srai> </set>
+                <set name="ultimo_dia"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set>
+                <set name="numero_dias_viernes"> <srai> SUMA <get name="numero_dias_viernes"/> 7 </srai> </set>
+            </think>
+
+            <random>        
+                <li>
+                    ¿Y para la semana del <get name="primer_dia"/> al <get name="ultimo_dia"/>?
+                </li>
+
+                <li>
+                    Mmm, pues a ver la siguiente semana sería la del <get name="primer_dia"/> al <get name="ultimo_dia"/>. ¿Como le viene esa?
+                </li>
+
+                <li>
+                    Perfecto, esa semana no... y la del  <get name="primer_dia"/> al <get name="ultimo_dia"/> ?
+                </li>
+            </random>
+        </template>
+    </category>
+
+    <category>
+        <pattern> (Podria) (ser) (y) (para) la semana del <set>dias</set> - <set>meses</set> - 20 al <set>dias</set> - <set>meses</set> - 20 </pattern>
+        <template> 
+
+        <think>
+            <set name="primer_dia"> <star/>-<star index="2"/>-20 </set> 
+            <set name="ultimo_dia"> <star index="4"/>-<star index="5"/>-<star index="6"/> </set>
+            <!--Procedo como en el caso 1, se supone que el cliente introduce una semana completa y correcta de lunes a viernes-->
+            <set name="date_ini"> <map name="conversor"> <star/> </map> <map name="meses_es"> <star index="2"/> </map> 20 </set>
+            <set name="date_fin"> <map name="conversor">  <star index="3"/> </map> <map name="meses_es"> <star index="4"/> </map> 20 </set>
+            <set var="fecha"> <get name="date_ini"/> </set>
+            <set var="dia_actual"> <get name="primer_dia"/></set>
+            <set var="num"> 4 </set>
+            <set var="lista_dias_candidatos"> <get var="dia_actual"/> </set>
+            <set name="lista_dias_libres"> </set>
+
+            <condition var="num"> 
+                
+                    <li value="0">
+                    </li>
+
+                    <li>
+                       
+                        <set var="fecha"> <srai>TOMORROWDATE <get var="fecha"/> </srai> </set>
+                        <set var="dia"> <map name="conversor"><srai> TOP <get var="fecha"/> </srai> </map></set>
+                        <set var="fecha"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                        <set var="mes"> <map name="meses_es"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                        <set var="anio"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                        <set var="dia_actual"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set> 
+                        <set var="lista_dias_candidatos"> <get var="lista_dias_candidatos"/> <get var="dia_actual"/> </set>
+                        <set var="num"> <srai>MINUS <get var="num"/> 1 </srai> </set>
+                        <set var="fecha"> <get var="dia"/> <get var="fecha"/> </set>
+                    <loop/>
+                    </li>  
+                </condition>  
+
+                <set var="item">
+                <srai> ITERATE <get var="lista_dias_candidatos"/> </srai>
+                </set>
+
+                <condition var="item">
+                    <li value="$"></li>
+                    <li>    
+                            <condition name="parte_dia">
+                                <li value="mañana">
+                                    <set var="sublista_horas_libres">
+                                        <srai> SUBLIST FROM 9 TO 13 OF <srai> LIST OF DAY <get var="item"/> </srai> </srai>
+                                    </set>                                        
+                                </li>
+
+                                <li value="tarde">
+                                    <set var="sublista_horas_libres">
+                                        <srai> SUBLIST FROM 14 TO 21 OF <srai> LIST OF DAY <get var="item"/> </srai> </srai>
+                                    </set>
+                                </li>
+
+                                <li>
+                                    <set var="sublista_horas_libres">
+                                        <srai> SUBLIST FROM 9 TO 21 OF <srai> LIST OF DAY <get var="item"/> </srai> </srai>
+                                    </set>
+                                </li>
+                            </condition>           
+                            <set var="cuenta"> <srai> FINDITEM null IN <get var="sublista_horas_libres"/> </srai> </set>         
+                            <condition var="cuenta">
+                                <li value="0">
+                                </li>
+                                <li>
+                                    <set name="lista_dias_libres"> <get name="lista_dias_libres"/> <get var="item"/> </set>
+                                </li>
+                            </condition>
+                            <set var="item">
+                                <srai>NEXT</srai>
+                            </set>
+                        <loop/>
+                    </li>
+                </condition>
+                <set var="vacia"><srai> COUNT <get name="lista_dias_libres"/> </srai></set>
+            </think> 
+
+            <condition var="vacia">
+                <li value="0">
+                    Vale, me temo que esa semana no quedan días libres, la podria otra semana?
+                </li>
+
+                <li>
+                    Vale voy a consultar los días que tengo disponibles esa semana...
+                    he encontrado hueco en estos dias: <get name="lista_dias_libres"/>
+                    Así que cualquier día de esos podría ser, que día prefiere?
+                </li>
+            </condition>  
+        </template>
+    </category>
+
+    <category>
+        <pattern> (Podria) (ser) (y) la semana del * al * </pattern>
+        <template> Disculpe, pero creo que ha introducido mal la semana </template>
+   </category>
+
+    <category>
+        <pattern>[Quisiera Podria Prefiero Para Pues] (ser) (quiero) (la) (cita) el  <set>dias</set> - <set>meses</set> - 20 </pattern>
+        <template> 
+            <set name="topic"> </set>
+            <condition name="parte_dia">
+                <li value="mañana">
+                    <set name="topic"> </set>
+                    <srai> hay hueco el <star/> de <map name="meses_es"> <star index="2"/> </map> por la mañana </srai>
+                </li>
+
+                <li value="tarde">
+                    <set name="topic"> </set>
+                    <srai> hay hueco el <star/> de <map name="meses_es"> <star index="2"/> </map> por la tarde </srai>
+                </li>
+
+                <li>
+                    <set name="topic"> </set>
+                    <srai> hay hueco el <star/> de <map name="meses_es"> <star index="2"/> </map> </srai>
+                </li>
+            </condition> 
+        </template>
+    </category>
+
+    <category>
+        <pattern> [Quiero Prefiero] la cita el <set>weekday_es</set> de esa semana (por) (la) (mañana) (tarde)</pattern>
+        <template>
+            <think><set var="condicion"> <star/> </set></think>
+            <condition var="condicion">
+                <li value="lunes">
+                    <think><set var="cuenta"> <srai> FINDITEM <get name="primer_dia"/> IN <get name="lista_dias_libres"/> </srai> </set> </think>        
+                    <condition var="cuenta">
+                        <li value="0">
+                            Pero ese día le he dicho que no teníamos hueco. Dígame otro dia.
+                        </li>
+                        <li>
+                            <think>
+                            <set var="fecha"> <get name="date_ini"/> </set>
+                            <set var="dia"> <srai> TOP <get var="fecha"/> </srai> </set>
+                            <set var="fecha"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                            <set var="mes"> <map name="meses_es"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                            <set var="anio"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                            </think>
+                            Muy bien, el lunes <get var="dia"/> entonces ... 
+                            <condition name="parte_dia">
+                                <li value="mañana">
+                                    <set name="topic"> </set>
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la mañana</srai>
+                                </li>
+                                <li value="tarde">
+                                    <set name="topic"> </set>                    
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la tarde</srai>
+                                </li>
+                                <li>
+                                    <set name="topic"> </set>                
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map></srai>
+                                </li>
+                            </condition>
+                        </li>
+                    </condition>
+
+                </li>
+
+                <li value="martes">
+                    <think>
+                    <set var="fecha"> <srai> TOMORROWDATE <get name="date_ini"/> </srai> </set>
+                    <set var="dia"> <map name="conversor"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                    <set var="fecha"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                    <set var="mes"> <map name="meses_es"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                    <set var="anio"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                    <set var="fecha2"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set>
+                    <set var="cuenta"> <srai> FINDITEM <get var="fecha2"/> IN <get name="lista_dias_libres"/> </srai> </set> 
+                    </think>
+                    Muy bien, el martes <get var="dia"/> entonces ...         
+                    <condition var="cuenta">
+                        <li value="0">
+                            Pero ese día le he dicho que no teníamos hueco. Dígame otro dia.
+                        </li>
+                        <li>
+                            
+                            <condition name="parte_dia">
+                                <li value="mañana">
+                                    <set name="topic"> </set>
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la mañana</srai>
+                                </li>
+                                <li value="tarde">
+                                    <set name="topic"> </set>                    
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la tarde</srai>
+                                </li>
+                                <li>
+                                    <set name="topic"> </set>                
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map></srai>
+                                </li>
+                            </condition>
+                        </li>
+                    </condition>
+                </li>
+
+                <li value="miercoles">
+                    <think>
+                    <set var="fecha"> <srai> TOMORROWDATE <srai> TOMORROWDATE <get name="date_ini"/> </srai> </srai> </set>
+                    <set var="dia"> <map name="conversor"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                    <set var="fecha"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                    <set var="mes"> <map name="meses_es"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                    <set var="anio"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                    <set var="fecha2"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set>
+                    <set var="cuenta"> <srai> FINDITEM <get var="fecha2"/> IN <get name="lista_dias_libres"/> </srai> </set> 
+                    </think>       
+                    Muy bien, el miercoles <get var="dia"/> entonces ... 
+                    <condition var="cuenta">
+                        <li value="0">
+                            Pero ese día le he dicho que no teníamos hueco. Dígame otro dia.
+                        </li>
+                        <li>
+                            
+                            <condition name="parte_dia">
+                                <li value="mañana">
+                                    <set name="topic"> </set>
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la mañana</srai>
+                                </li>
+                                <li value="tarde">
+                                    <set name="topic"> </set>                    
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la tarde</srai>
+                                </li>
+                                <li>
+                                    <set name="topic"> </set>                
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map></srai>
+                                </li>
+                            </condition>
+                        </li>
+                    </condition>
+                </li>
+
+                <li value="jueves">
+                    <think>
+                    <set var="fecha"> <srai> TOMORROWDATE <srai> TOMORROWDATE <srai> TOMORROWDATE <get name="date_ini"/> </srai> </srai> </srai> </set>
+                    <set var="dia"> <map name="conversor"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                    <set var="fecha"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                    <set var="mes"> <map name="meses_es"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                    <set var="anio"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                    <set var="fecha2"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set>
+                    <set var="cuenta"> <srai> FINDITEM <get var="fecha2"/> IN <get name="lista_dias_libres"/> </srai> </set> 
+                    </think>
+                    Muy bien, el jueves <get var="dia"/> entonces ...        
+                    <condition var="cuenta">
+                        <li value="0">
+                            Pero ese día le he dicho que no teníamos hueco. Dígame otro dia.
+                        </li>
+                        <li>
+                            
+                            <condition name="parte_dia">
+                                <li value="mañana">
+                                    <set name="topic"> </set>
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la mañana</srai>
+                                </li>
+                                <li value="tarde">
+                                    <set name="topic"> </set>                    
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la tarde</srai>
+                                </li>
+                                <li>
+                                    <set name="topic"> </set>                
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map></srai>
+                                </li>
+                            </condition>
+                        </li>
+                    </condition>
+                </li>
+
+                <li value="viernes">
+                    <think>
+                    <set var="fecha"> <srai> TOMORROWDATE <srai> TOMORROWDATE <srai> TOMORROWDATE <srai> TOMORROWDATE <get name="date_ini"/> </srai> </srai> </srai> </srai> </set>
+                    <set var="dia"> <map name="conversor"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                    <set var="fecha"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                    <set var="mes"> <map name="meses_es"> <srai> TOP <get var="fecha"/> </srai> </map> </set>
+                    <set var="anio"> <srai> REMAIN <get var="fecha"/> </srai> </set>
+                    <set var="fecha2"> <get var="dia"/>-<get var="mes"/>-<get var="anio"/> </set>
+                    <set var="cuenta"> <srai> FINDITEM <get var="fecha2"/> IN <get name="lista_dias_libres"/> </srai> </set> 
+                    </think>    
+                    Muy bien, el viernes <get var="dia"/> entonces ...    
+                    <condition var="cuenta">
+                        <li value="0">
+                            Pero ese día le he dicho que no teníamos hueco. Dígame otro dia.
+                        </li>
+                        <li>
+                            <condition name="parte_dia">
+                                <li value="mañana">
+                                    <set name="topic"> </set>
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la mañana</srai>
+                                </li>
+                                <li value="tarde">
+                                    <set name="topic"> </set>                    
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map> por la tarde</srai>
+                                </li>
+                                <li>
+                                    <set name="topic"> </set>                
+                                    <srai> hay hueco el <get var="dia"/> de <map name="meses_es"> <get var="mes"/> </map></srai>
+                                </li>
+                            </condition>
+                        </li>
+                    </condition>
+                </li>
+            </condition>
+
+        </template>
+    </category>
+
+
+</topic>
+
+
+</aiml>
+
